@@ -148,8 +148,6 @@ def extract_info(text):
 def main():
     # dingtalk  webhook
     webhook = "dingtalk webhook url here"
-    # 公司群
-    # webhook = 'h ttps://oapi.dingtalk.com/robot/send?access_token=c956a9143dd5fe81557558183529edaa379f6ae7939aa91d5a89051f8d3a3392'
     robot = DtalkRobot(webhook)
     url = "MLflow experiments monitoring web url here"
     payload = {"experiment_ids":["5"]}    # 实验编号
@@ -248,7 +246,7 @@ def main():
             msg_run = '暂无正在训练的模型'
         
         if not SAFE:
-            message = "## CPM训练信息  \n* 错误信息: " +  msg_err +\
+            message = "## 模型训练信息  \n* 错误信息: " +  msg_err +\
                 "\n* 正在训练： " + msg_run + "\n* 训练失败或终止(未超过2天): " + \
                         msg_fail   + "\n* 训练完成（未超过2天）：" + \
                         msg_fin
@@ -259,7 +257,7 @@ def main():
         time.sleep(60)
         
         if cnt % 1 == 0:  # 1小时播放一次 6
-            message = "## CPM训练情况" + "\n* 日志时间：" + cur_time +\
+            message = "## 模型训练情况" + "\n* 日志时间：" + cur_time +\
                                         "\n* 正在训练：" +  msg_run + "\n* 训练异常: " + \
                                                 msg_err    + "\n* 训练失败或终止（未超过2天）: " + \
                                                 msg_fail   + "\n* 训练完成（未超过2天）：" + \
