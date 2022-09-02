@@ -1,6 +1,6 @@
-# DingTalk-MLflow-scraper
+# DingTalk-MLflow-spider
 
-**A simple practice on web scrapping.**
+**A simple practice on web spider.**
 
 Functions:
 * Scraping model training details from MLflow to DingTalk bots.
