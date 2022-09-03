@@ -2,7 +2,7 @@ import time
 import datetime as dt
 
 from msg_bot import DtalkRobot
-from scraper import post_request, extract_info
+from spider import post_request, extract_info
 
 def main():
     webhook = ""  # dingtalk webhook url here
@@ -40,6 +40,7 @@ def main():
                         #status_before = before["status"]
                         status_after = after["status"] 
                         end_time = after["end_time"]  # 结束时间
+                        exp_id = after["experiment_id"]
                         
                         if  status_after == "RUNNING":
                             # 记录还在训练的模型
@@ -106,9 +107,21 @@ def main():
         
         if not SAFE:
             message = "## 模型训练检测信息（每10分钟检测一次）  \n* 警示信息: " +  msg_err +\
-                "\n* 正在训练： " + msg_run  
-            robot.sendMarkdown("训练类型", message)
-    
+                "\n* 实验ID：" + exp_id + \
+                "\n* 正在训练： " + msg_run  #+ "\n* 训练失败或终止(未超过2天): " + \
+                        #msg_fail   + "\n* 训练完成（未超过2天）：" + \
+                        #msg_fin
+
+            #  If meet a error, then retry
+            try:
+                STATUS = "GOOD"
+                robot.sendMarkdown("训练类型", message)
+            except:
+                STATUS = "ERROR"
+                time.sleep(30)
+                robot.sendMarkdown("训练类型", message)
+            finally:
+                print(STATUS)
                         
         # 每次播报后休息1分钟    
         #time.sleep(10)
@@ -117,11 +130,21 @@ def main():
         print("cnt = ", cnt)
         if cnt % 6 == 0:  # 1小时播放一次 6
             message = "## 模型训练检测情况" + "\n* 日志时间：" + cur_time +\
+                                        "\n* 实验ID：" + exp_id + \
                                         "\n* 正在训练：" +  msg_run + "\n* 训练异常: " + \
                                                 msg_err    + "\n* 训练失败或终止（未超过2天）: " + \
                                                 msg_fail   + "\n* 训练完成（未超过2天）：" + \
                                                 msg_fin 
-            robot.sendMarkdown("训练类型", message)
+            
+            try:
+                STATUS = "GOOD"
+                robot.sendMarkdown("训练类型", message)
+            except:
+                STATUS = "ERROR"
+                time.sleep(30)
+                robot.sendMarkdown("训练类型", message)
+            finally:
+                print(STATUS)
             
         
         

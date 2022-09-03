@@ -5,19 +5,6 @@ import urllib.request
 import urllib.parse
 #from sanic import Sanic
 
-import requests
-from requests.adapters import HTTPAdapter 
-from urllib3.poolmanager import PoolManager
-import ssl
-
-
-class MyAdapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False):
-        self.poolmanager = PoolManager(num_pools=connections,
-                                        maxsize=maxsize, 
-                                        block=block,
-                                        ssl_version=ssl.PROTOCOL_TLSv1)
-
 
 # 自定义机器人的封装类
 class DtalkRobot(object):
@@ -56,8 +43,6 @@ class DtalkRobot(object):
     def post(self, data):
         # post_data = json.JSONEncoder().encode(data)
         print(data)
-        s = requests.Session()
-        s.mount('https://', MyAdapter())
         post_data = json.dumps(data).encode()
         req = urllib.request.Request(self.webhook, post_data)
         req.add_header('Content-Type', 'application/json')
